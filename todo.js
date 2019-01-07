@@ -4,7 +4,19 @@ const toDoForm = document.querySelector(".js-toDoForm"),
 
 const TODOS_LS = 'toDos';
 
-const toDos = [];
+let toDos = [];
+
+function deleteToDo(event) {
+    const btn = event.target;
+    const li = btn.parentNode;
+    toDoList.removeChild(li);
+    const cleanToDos = toDos.filter(function(toDo){
+        //console.log(toDo.id, li.id); 이걸 통해서 숫자인지 string인지 확인해봄
+        return toDo.id !== parseInt(li.id);
+    });
+    toDos = cleanToDos; // const 상태에서 이 명령은 실행 불가이므로 const -> let으로 변경
+    saveToDos();
+}
 
 function saveToDos(){
     localStorage.setItem(TODOS_LS, JSON.stringify(toDos));//LS는 string만 저장, JSON.stringify를 쓰면 object를 string으로 바꿔줌
@@ -16,6 +28,7 @@ function paintToDo(text){
     const span = document.createElement("span"); // span은 div tag과 비슷, id와 class 처럼 styling을 위해 만든다
     const newId = toDos.length +1; // 각 li마다 id를 줄꺼임 -> 나중에 delete를 눌렀을 때 어떤 li를 지워야하는지 알 수 있도록
     delBtn.innerText = "X";
+    delBtn.addEventListener("click", deleteToDo);
     span.innerText = text;
     li.appendChild(delBtn);
     li.appendChild(span); //put somthing inside of father element
